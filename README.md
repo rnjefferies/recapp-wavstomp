@@ -34,9 +34,13 @@ Install the Required Dependencies:
     pip install -r requirements.txt
 
 Make sure the following directories exist within your project:
+        
         app/: Contains the recapp.py file.
+
         scripts/: Contains the wavstomp.py file.
+
         data/: For storing output CSV files.
+        
         participants/: For storing participant-specific recordings and data.
 
 ## Usage
