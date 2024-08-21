@@ -22,7 +22,7 @@ This project includes two basic tools: `Recapp` and `Wavstomp`.
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/recapp-wavstomp.git
+   git clone https://github.com/rnjefferies/recapp-wavstomp.git
 
 Navigate to the Project Directory:
 
