@@ -26,14 +26,12 @@ This project includes two basic tools: `Recapp` and `Wavstomp`.
 
 Navigate to the Project Directory:
 
-bash
-
-cd recapp-wavstomp
+    ```bash
+    cd recapp-wavstomp
 
 Install the Required Dependencies:
 
-bash
-
+    ```bash
     pip install -r requirements.txt
 
 Ensure Proper Directory Structure:
@@ -49,10 +47,10 @@ Ensure Proper Directory Structure:
     Start the Application:
         Navigate to the app directory and run recapp.py:
 
-        bash
-
-        cd app
-        python recapp.py
+        
+    ```bash
+    cd app
+    python recapp.py
 
     Recording Sessions:
         Enter the Participant ID and Condition (A, B, or C).
@@ -70,10 +68,9 @@ Ensure Proper Directory Structure:
     Run the Script:
         Navigate to the scripts directory and run wavstomp.py:
 
-        bash
-
-        cd scripts
-        python wavstomp.py
+    ```bash
+    cd scripts
+    python wavstomp.py
 
     Processing Files:
         The script will process all .wav files in the participants/ directory, analyse them to detect speech segments, and save the results.
@@ -110,4 +107,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-    Thanks to the open-source community for providing the libraries and tools that made this project possible. Special thanks to Alex for being the best brother and for the most epic frontshuvits. 
+    Thanks to the open-source community for providing the libraries and tools that made this project possible. A special thanks to Alex for being the best brother and for the epic front shuvits. 
