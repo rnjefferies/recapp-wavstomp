@@ -83,11 +83,10 @@ Output:
 A main_segments.csv file is generated in the data/ directory, summarising the detected segments across all participants.
 Waveform plots with highlighted segments are saved in the participants/ directory alongside the original .wav files.
 
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
-Thanks to the open-source community for providing the libraries and tools that made this project possible. A special thanks to Alex for being the best brother and for the epic front shuvits. 
+Thanks to the open-source community for providing the libraries and tools that made this project possible. A special thanks to Al for being the best brother with the best front shuvits in FP. 
