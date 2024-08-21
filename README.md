@@ -21,7 +21,7 @@ This project includes two basic tools: `Recapp` and `Wavstomp`.
 
 1. **Clone the Repository**:
 
-   git clone https://github.com/rnjefferies/recapp-wavstomp.git
+    git clone https://github.com/rnjefferies/recapp-wavstomp.git
 
 Navigate to the Project Directory:
 
@@ -34,7 +34,7 @@ Install the Required Dependencies:
     pip install -r requirements.txt
 
 Ensure Proper Directory Structure:
-    Make sure the following directories exist within your project:
+Make sure the following directories exist within your project:
         app/: Contains the recapp.py file.
         scripts/: Contains the wavstomp.py file.
         data/: For storing output CSV files.
@@ -43,37 +43,36 @@ Ensure Proper Directory Structure:
 ## Usage
 **Recapp**
 
-    Start the Application:
-        Navigate to the app directory and run recapp.py:
+*Start the Application*:
+Navigate to the app directory and run recapp.py:
 
     cd app
     python recapp.py
 
-    Recording Sessions:
-        Enter the Participant ID and Condition (A, B, or C).
-        Click "Start Recording" to begin the session.
-        Use the "Flag Question" and "Flag Answer" buttons to mark the end of questions and answers during the session. You can also use the Q and A
-        keys on your keyboard. 
-        Click "Stop Recording" to save the session.
+Recording Sessions:
+Enter the Participant ID and Condition (A, B, or C).
+Click "Start Recording" to begin the session.
+Use the "Flag Question" and "Flag Answer" buttons to mark the end of questions and answers during the session. You can also use the Q and A keys on your keyboard. 
+Click "Stop Recording" to save the session.
 
-    Output:
-        .wav files are saved in the participants/ directory, named according to the participant ID and condition.
-        A CSV log (flagged_events.csv) is saved in the data/ directory, recording the flagged events.
+Output:
+.wav files are saved in the participants/ directory, named according to the participant ID and condition.
+A CSV log (flagged_events.csv) is saved in the data/ directory, recording the flagged events.
 
 **Wavstomp**
 
-    Run the Script:
-        Navigate to the scripts directory and run wavstomp.py:
+*Run the Script*:
+Navigate to the scripts directory and run wavstomp.py:
 
     cd scripts
     python wavstomp.py
 
-    Processing Files:
-        The script will process all .wav files in the participants/ directory, analyse them to detect speech segments, and save the results.
+Processing Files:
+The script will process all .wav files in the participants/ directory, analyse them to detect speech segments, and save the results.
 
-    Output:
-        A main_segments.csv file is generated in the data/ directory, summarising the detected segments across all participants.
-        Waveform plots with highlighted segments are saved in the participants/ directory alongside the original .wav files.
+Output:
+A main_segments.csv file is generated in the data/ directory, summarising the detected segments across all participants.
+Waveform plots with highlighted segments are saved in the participants/ directory alongside the original .wav files.
 
 
 ## License
@@ -82,4 +81,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-    Thanks to the open-source community for providing the libraries and tools that made this project possible. A special thanks to Alex for being the best brother and for the epic front shuvits. 
+Thanks to the open-source community for providing the libraries and tools that made this project possible. A special thanks to Alex for being the best brother and for the epic front shuvits. 
