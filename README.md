@@ -6,7 +6,7 @@ This project includes two basic tools: `Recapp` and `Wavstomp`.
 
 - **Recapp** is a Python application for recording speech-based data collection sessions. It allows users to start and stop recordings, and to flag the end of questions and answers during the session. The recordings are saved as `.wav` files, and the flagged events are logged in a CSV file.
 
-- **Wavstomp** is a Python script for analyzing the recorded `.wav` files. It detects speech segments in the audio files, differentiating between questions and answers using a simple system of expected Q & A alternation, and logs the details into a comprehensive CSV file. Additionally, it generates waveform plots with the detected segments highlighted.
+- **Wavstomp** is a Python script for analysing the recorded `.wav` files. It detects speech segments in the audio files, differentiating between questions and answers using a simple system of expected Q & A alternation, and logs the details into a comprehensive CSV file. Additionally, it generates waveform plots with the detected segments highlighted.
 
 ## Table of Contents
 
