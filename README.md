@@ -14,24 +14,23 @@ This project includes two basic tools: `Recapp` and `Wavstomp`.
 - [Usage](#usage)
   - [Recapp](#recapp)
   - [Wavstomp](#wavstomp)
-- [Project Structure](#project-structure)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ## Installation
 
 1. **Clone the Repository**:
-   ```bash
+
    git clone https://github.com/rnjefferies/recapp-wavstomp.git
 
 Navigate to the Project Directory:
 
-    ```bash
+
     cd recapp-wavstomp
 
 Install the Required Dependencies:
 
-    ```bash
+
     pip install -r requirements.txt
 
 Ensure Proper Directory Structure:
@@ -47,8 +46,6 @@ Ensure Proper Directory Structure:
     Start the Application:
         Navigate to the app directory and run recapp.py:
 
-        
-    ```bash
     cd app
     python recapp.py
 
@@ -68,7 +65,6 @@ Ensure Proper Directory Structure:
     Run the Script:
         Navigate to the scripts directory and run wavstomp.py:
 
-    ```bash
     cd scripts
     python wavstomp.py
 
@@ -79,27 +75,6 @@ Ensure Proper Directory Structure:
         A main_segments.csv file is generated in the data/ directory, summarising the detected segments across all participants.
         Waveform plots with highlighted segments are saved in the participants/ directory alongside the original .wav files.
 
-## Project Structure
-
-recapp-wavstomp/
-│
-├── app/
-│   └── recapp.py          # Recording application
-│
-├── scripts/
-│   └── wavstomp.py        # Analysis script
-│
-├── data/                  # Directory for output CSV files
-│   ├── flagged_events.csv
-│   └── main_segments.csv
-│
-├── participants/          # Directory for storing participant recordings and plots
-│   ├── participant_1/
-│   │   └── recording_1_C_A_TIMESTAMP.wav
-│   └── participant_2/
-│       └── recording_2_C_B_TIMESTAMP.wav
-│
-└── requirements.txt       # Project dependencies
 
 ## License
 
