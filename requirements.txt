@@ -1,0 +1,6 @@
+sounddevice
+numpy
+pillow
+tcl-tk
+librosa
+matplotlib
