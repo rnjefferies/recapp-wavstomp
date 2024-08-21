@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is built specifically for my PhD analyses, but the tools could be useful to other SA reserachers or adapted to something completely different. It icludes two main tools: `Recapp` and `Wavstomp`. 
+This project includes two basic tools: `Recapp` and `Wavstomp`. 
 
 - **Recapp** is a Python application for recording speech-based data collection sessions. It allows users to start and stop recordings, and to flag the end of questions and answers during the session. The recordings are saved as `.wav` files, and the flagged events are logged in a CSV file.
 
