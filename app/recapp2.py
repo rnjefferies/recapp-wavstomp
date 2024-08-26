@@ -1,15 +1,16 @@
 import sys
 import os
 import numpy as np
-import sounddevice as sd  # Import sounddevice
+import sounddevice as sd
 import tkinter as tk
 import time
 import csv
 import wave
 from PIL import Image, ImageTk
-from tkinter import messagebox  # Import messagebox separately
+from tkinter import messagebox
+import threading
 
-# Ensure the parent directory is added to the system path
+# Add the parent directory to the system path to ensure module imports work correctly
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from scripts.audio_player import AudioPlayer
 
@@ -32,14 +33,13 @@ class AudioRecorderApp:
         self.audio_player = None
         self.current_question = 1
 
-        # Adjust the paths according to your directory structure
+        # Adjust paths according to your directory structure
         self.main_directory = os.path.join('..', 'participants')
         os.makedirs(self.main_directory, exist_ok=True)
 
         self.data_directory = os.path.join('..', 'data')
         os.makedirs(self.data_directory, exist_ok=True)
 
-        # Path to the audio files directory
         self.audio_directory = os.path.join('..', 'audio')
         if not os.path.exists(self.audio_directory):
             messagebox.showerror("Error", "Audio questions directory not found!")
@@ -208,13 +208,21 @@ class AudioRecorderApp:
     def play_current_question(self, event=None):
         audio_file = os.path.join(self.audio_directory, f"{self.current_question}.wav")
         if os.path.exists(audio_file):
-            self.audio_player = AudioPlayer(audio_file)
-            self.audio_player.play()
-            
-            # Automatically flag the end of the question
-            self.auto_flag_end_of_question()
+            self.status_label.config(text="Playing question...")
+
+            # Play audio in a separate thread to keep the UI responsive
+            threading.Thread(target=self.play_audio_in_thread, args=(audio_file,)).start()
         else:
             messagebox.showerror("Error", f"Audio file for question {self.current_question} not found!")
+
+    def play_audio_in_thread(self, audio_file):
+        self.audio_player = AudioPlayer(audio_file)
+        self.audio_player.play()
+
+        # Automatically flag the end of the question
+        self.auto_flag_end_of_question()
+
+        self.status_label.config(text="Question playback complete.")
 
     def auto_flag_end_of_question(self):
         if self.recording:
