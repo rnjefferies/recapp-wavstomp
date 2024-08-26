@@ -3,46 +3,74 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import os
+import webrtcvad
 
-def detect_speech_segments(audio, sr, dynamic_range=1.5, min_silence_len=0.4, min_segment_len=0.1):
-    amplitude = np.abs(audio)
-    amplitude = amplitude / np.max(amplitude)
+def load_question_flags(flag_csv_file, participant_id, condition):
+    question_times = []
+    with open(flag_csv_file, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['Participant ID'] == participant_id and row['Condition'] == condition:
+                question_times.append(float(row['Question Timestamp (s)']))
+    return question_times
 
-    # Calculate a dynamic threshold based on the mean and standard deviation of the amplitude
-    mean_amplitude = np.mean(amplitude)
-    std_amplitude = np.std(amplitude)
-    dynamic_thresh = mean_amplitude + dynamic_range * std_amplitude
-
-    speech_indices = np.where(amplitude > dynamic_thresh)[0]
-
-    segments = []
+def vad_detect_speech(audio, sr, frame_duration=30):
+    vad = webrtcvad.Vad()
+    vad.set_mode(0)  # 0: most aggressive, 3: least aggressive
+    
+    # Resample the audio to 16000 Hz if necessary
+    if sr != 16000:
+        print(f"Resampling audio from {sr} Hz to 16000 Hz")
+        audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
+        sr = 16000
+    
+    # Convert audio to 16-bit PCM format
+    audio_int16 = (audio * 32767).astype(np.int16)
+    
+    # Calculate frame size in samples
+    frame_size = int(sr * frame_duration / 1000)
+    
+    speech_segments = []
     current_start = None
     current_end = None
-    
-    for i in speech_indices:
-        if current_start is None:
-            current_start = i
-        elif i > current_end + sr * min_silence_len:
-            # Check if the segment is longer than the minimum segment length
-            if (current_end - current_start) / sr >= min_segment_len:
-                segments.append((current_start, current_end))
-            current_start = i
-        current_end = i
-    
-    # Add the last segment if it exists and is longer than the minimum segment length
-    if current_start is not None and (current_end - current_start) / sr >= min_segment_len:
-        segments.append((current_start, current_end))
-    
-    return segments
 
-def analyze_audio(file_path):
-    audio, sr = librosa.load(file_path, sr=None)
-    speech_segments = detect_speech_segments(audio, sr)
-    segments = []
+    print("Running VAD on audio frames...")
+    for start in range(0, len(audio_int16) - frame_size, frame_size):
+        end = start + frame_size
+        try:
+            is_speech = vad.is_speech(audio_int16[start:end].tobytes(), sr)
+        except ValueError as e:
+            print(f"Error processing frame {start}-{end}: {e}")
+            continue
+        
+        if is_speech:
+            if current_start is None:
+                current_start = start
+            current_end = end
+        else:
+            if current_start is not None:
+                speech_segments.append((current_start, current_end))
+                current_start = None
     
-    for i, (start, end) in enumerate(speech_segments):
-        segment_type = 'Question' if i % 2 == 0 else 'Answer'
-        segments.append((segment_type, start / sr, end / sr))
+    if current_start is not None:
+        speech_segments.append((current_start, current_end))
+
+    print(f"Detected {len(speech_segments)} speech segments")
+    return [(start / sr, end / sr) for start, end in speech_segments]
+
+def analyze_audio_with_vad(file_path, question_times):
+    audio, sr = librosa.load(file_path, sr=None)
+    segments = []
+
+    for question_time in question_times:
+        segments.append(('Question', question_time, question_time))
+        
+        # Detect speech after the question timestamp
+        vad_segments = vad_detect_speech(audio, sr)
+        for start, end in vad_segments:
+            if start > question_time:
+                segments.append(('Answer', start, end))
+                break  # Assume only the first segment after the question is the answer
     
     return segments, audio, sr
 
@@ -56,7 +84,7 @@ def save_segments_to_csv(csv_file, segments, participant_id, condition):
         
         for segment_type, start, end in segments:
             if segment_type == 'Question':
-                question_time = end  # Save end time of the question
+                question_time = start  # Start and end are the same for questions
             elif segment_type == 'Answer' and question_time is not None:
                 time_difference = end - question_time
                 writer.writerow([participant_id, condition, f'E{event_id}', f'{question_time:.2f}', f'{end:.2f}', f'{time_difference:.2f}'])
@@ -85,7 +113,7 @@ def extract_info_from_filename(filename):
     condition = parts[2][1]  # Take the second character after the underscore
     return participant_id, condition
 
-def process_directory(main_directory, output_csv):
+def process_directory(main_directory, flag_csv, output_csv):
     # Ensure the data directory exists
     data_directory = os.path.dirname(output_csv)
     if not os.path.exists(data_directory):
@@ -105,14 +133,17 @@ def process_directory(main_directory, output_csv):
                 file_path = os.path.join(root, filename)
                 participant_id, condition = extract_info_from_filename(filename)
                 
-                # Analyze the audio and detect segments
-                segments, audio, sr = analyze_audio(file_path)
+                # Load the question times from the flag CSV file
+                question_times = load_question_flags(flag_csv, participant_id, condition)
+                
+                # Analyze the audio and detect segments using VAD
+                segments, audio, sr = analyze_audio_with_vad(file_path, question_times)
                 
                 # Prepare the segments for sorting
                 event_id = 1
                 for segment_type, start, end in segments:
                     if segment_type == 'Question':
-                        question_time = end
+                        question_time = start
                     elif segment_type == 'Answer' and question_time is not None:
                         time_difference = end - question_time
                         all_segments.append([participant_id, condition, f'E{event_id}', question_time, end, time_difference])
@@ -135,7 +166,9 @@ def process_directory(main_directory, output_csv):
 if __name__ == "__main__":
     # Calculate the absolute path to the main directory
     main_directory = os.path.abspath(os.path.join('..', 'participants'))  # Move up one directory level to reach the participants directory
+    flag_csv = os.path.abspath(os.path.join('..', 'data', 'flagged_events.csv'))  # Path to the CSV file with question flags
     output_csv = os.path.abspath(os.path.join('..', 'data', 'main_segments.csv'))  # Save the main_segments.csv in the data subdirectory
     
     # Process all WAV files in the main directory and its subdirectories
-    process_directory(main_directory, output_csv)
+    process_directory(main_directory, flag_csv, output_csv)
+    print("Processing complete.")
